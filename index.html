@@ -92,7 +92,7 @@
 
 		var mesh, texture, geometry, materials, material, current_material;
 
-		var light, pointLight, ambientLight;
+		var light, pointLight, pointLight2, ambientLight;
 
 		var effect, resolution, numBlobs;
 
@@ -113,7 +113,7 @@
 			// CAMERA
 
 			camera = new THREE.PerspectiveCamera( 45, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000 );
-			camera.position.set( -500, 500, 1500 );
+			camera.position.set( 10, 10, 1300 );
 
 			// CONTROLS
 
@@ -126,14 +126,20 @@
 			// LIGHTS
 
 			light = new THREE.DirectionalLight( 0xffffff );
-			light.position.set( 0.5, 0.5, 1 );
+			light.position.set( 150, 50, 100 );
 			scene.add( light );
 
 			pointLight = new THREE.PointLight( 0xff3300 );
-			pointLight.position.set( 0, 0, 100 );
+			pointLight.position.set( 100, 100, 150 );
 			scene.add( pointLight );
 
-			ambientLight = new THREE.AmbientLight( 0x080808 );
+			pointLight2 = new THREE.PointLight( 0xD5D887 );
+			pointLight2.position.set( 50, 50, 50 );
+			pointLight2.intensity = 1;
+			scene.add( pointLight2 );
+
+			ambientLight = new THREE.AmbientLight( 0x000000 );
+			ambientLight.intensity = 1;
 			scene.add( ambientLight );
 
 			// MATERIALS
@@ -144,7 +150,7 @@
 			// MARCHING CUBES
 
 			resolution = 28;
-			numBlobs = 2;
+			numBlobs = 5;
 
 			effect = new THREE.MarchingCubes( resolution, materials[ current_material ].m, true, true );
 			effect.position.set( 0, 0, 0 );
@@ -307,14 +313,20 @@
 
 			"shiny"  :
 			{
-				m: new THREE.MeshPhongMaterial( { color: 0x7ca982, specular: 0x7ca982, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.3, perPixel: true, metal: true } ),
-				h: 1, s: 0.9, v: 0.3
+				m: new THREE.MeshPhongMaterial( { color: 0x006D77, emissive: 0x006D77, specular: 0x006D77, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.8, perPixel: true, metal: true } ),
+				h: 0, s: 0, v: 1
 			},
 
 			"matte" :
 			{
-				m: new THREE.MeshPhongMaterial( { color: 0x000000, emissive: 0x7161ef, opacity:1, shininess: 1, perPixel: true } ),
-				h: 0, s: 0, v: 1
+				m: new THREE.MeshPhongMaterial( { color: 0xD90368, emissive: 0x820263, emissiveIntensity: 0.5, specular: 0x006D77, envMap: reflectionCube, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} ),
+				h: 1, s: 0.5, v: 1
+			},
+
+			"matte2" :
+			{
+				m: new THREE.MeshPhongMaterial( { color: 0xC5E063, emissive: 0x23967F, emissiveIntensity: 0.5, specular: 0xC5E063, envMap: reflectionCube, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} ),
+				h: 1, s: 0.5, v: 1
 			},
 
 			"flat" :
@@ -467,20 +479,20 @@
 
 			effectController = {
 
-			material:   "shiny",
+			material:   "matte",
 
 			speed :   1.0,
 			numBlobs:   2,
-			resolution: 28,
-			isolation:  80,
+			resolution: 100,
+			isolation:  60,
 
-			floor: true,
+			floor: false,
 			wallx: false,
 			wallz: false,
 
-			hue:    0.0,
-			saturation: 0.9,
-			value:    0.3,
+			hue:    1,
+			saturation: 1,
+			value:    1,
 
 			lhue:     0.04,
 			lsaturation: 1.0,
@@ -659,26 +671,32 @@
 			// fill the field with some metaballs
 
 			var i, ballx, bally, subtract, strength;
+			var ball2x, ball2y, ball2z;
 
 			subtract = 12;
 			strength = 1.2 / ( ( Math.sqrt( numblobs ) - 1 ) / 4 + 1 );
 
-			for ( i = 0; i < numblobs; i ++ ) {
-
 				
 				//ballx = Math.sin( i + 1.26 * time * ( 1.03 + 0.5 * Math.cos( 0.21 * i ) ) ) * 0.27 + 0.5;
-				bally = 0.1 + Math.sin(time)/2;
-				ballx = 0.6;
+				 bally = 0.5;
+			     ballx = 0.6 + Math.sin(time)/10;
+				 ballz = 0.45 - Math.sin(time)/10;
+				 ball2y = 0.5;
+			     ball2x = 0.25 - Math.sin(time)/10;
+				 ball2z = 0.45 + Math.sin(time)/10;
 				//bally = Math.abs( Math.cos( i + 1.12 * time * Math.cos( 1.22 + 0.1424 * i ) ) ) * 0.77; // dip into the floor
 				//ballz = Math.cos( i + 1.32 * time * 0.1 * Math.sin( ( 0.92 + 0.53 * i ) ) ) * 0.27 + 0.5;
 
-				object.addBall(ballx, bally, ballx, strength, subtract);
+				
 
-			}
+				object.addBall(ballx, bally, ballz, strength, subtract);
+				object.addBall(ball2x, ball2y, ball2z, strength, subtract);
 
-			//if ( floor ) object.addPlaneY( 2, 12 );
-			if ( wallz ) object.addPlaneZ( 2, 12 );
-			if ( wallx ) object.addPlaneX( 2, 12 );
+			
+
+			if ( floor ) object.addPlaneZ( 2, 12 );
+			// if ( wallz ) object.addPlaneZ( 2, 12 );
+			// if ( wallx ) object.addPlaneX( 2, 12 );
 
 		}
 
