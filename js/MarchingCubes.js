@@ -458,7 +458,7 @@ THREE.MarchingCubes = function ( resolution, material, enableUvs, enableColors )
 	// Adds a reciprocal ball (nice and blobby) that, to be fast, fades to zero after
 	// a fixed distance, determined by strength and subtract.
 
-	this.addBall = function( ballx, bally, ballz, strength, subtract ) {
+	this.addBall = function( ballx, bally, ballz, strength, subtract, material ) {
 
 		// Let's solve the equation to find the radius:
 		// 1.0 / (0.000001 + radius^2) * strength - subtract = 0
@@ -510,6 +510,8 @@ THREE.MarchingCubes = function ( resolution, material, enableUvs, enableColors )
 		}
 
 	};
+
+	
 
 	this.addPlaneX = function( strength, subtract ) {
 
