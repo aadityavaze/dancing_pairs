@@ -13,18 +13,25 @@ let xCharactersticB;
 let myBLEa, myBLEb;
 
 function setup() {
+ 
   // Create a p5ble class
   myBLEa = new p5ble();
   myBLEb = new p5ble();
 
-  createCanvas(200, 200);
+  let cnv = createCanvas(500, 200);
+  //cnv.position(0, 0, 'fixed');
+  
   textSize(20);
-  textAlign(CENTER, CENTER);
+  textAlign(LEFT, CENTER);
 
   // Create a 'Connect' button
   const connectAButton = createButton('Connect A')
+  connectAButton.parent(document.getElementById("container"))
+  connectAButton.position(10, 10);
   connectAButton.mousePressed(connectToBleA);
   const connectBButton = createButton('Connect B')
+  connectBButton.parent(document.getElementById("container"))
+  connectBButton.position(100, 10);
   connectBButton.mousePressed(connectToBleB);
   console.log("P5  setup done")
 }

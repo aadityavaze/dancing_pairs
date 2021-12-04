@@ -52,7 +52,10 @@
 	 
 </head>
 
+
+
 <body>
+	<script src="sketch.js"></script>
 
 	<div id="container"></div>
 	<!-- <div id="info">
@@ -84,14 +87,14 @@
 	<script src="js/libs/stats.min.js"></script>
 	<script src="js/libs/DAT.GUI.min.js"></script>
 	
-	<script src="sketch.js"></script>
+	
 
 	<script>
 		if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
 		var MARGIN = 0;
 
-		var SCREEN_WIDTH = window.innerWidth/2;
+		var SCREEN_WIDTH = window.innerWidth;
 		var SCREEN_HEIGHT = window.innerHeight - 2 * MARGIN;
 
 		var container, stats;
@@ -256,7 +259,7 @@
 
 		function onWindowResize( event ) {
 
-			SCREEN_WIDTH = window.innerWidth;
+			SCREEN_WIDTH = window.innerWidth/2;
 			SCREEN_HEIGHT = window.innerHeight - 2 * MARGIN;
 
 			renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
