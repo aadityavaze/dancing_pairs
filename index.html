@@ -1,6 +1,12 @@
 ﻿<!DOCTYPE HTML>
 <html lang="en">
 <head>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
+	<script
+	  src="https://unpkg.com/p5ble@0.0.7/dist/p5.ble.js"
+	  type="text/javascript"
+	></script>
 	<title>three.js webgl - marching cubes</title>
 	<meta charset="utf-8">
 	<style>
@@ -43,16 +49,20 @@
 		}
 
 	</style>
+	 
 </head>
 
+
+
 <body>
+	<script src="sketch.js"></script>
 
 	<div id="container"></div>
 	<!-- <div id="info">
 		<a href="http://threejs.org" target="_blank">three.js</a> -
 		marching cubes -
-		[based on greggman's <a href="http://webglsamples.googlecode.com/hg/blob/blob.html">blob</a> -->
-	</div>
+		[based on greggman's <a href="http://webglsamples.googlecode.com/hg/blob/blob.html">blob</a>
+	</div> -->
 
 	<script src="three.min.js"></script>
 
@@ -76,7 +86,8 @@
 	<script src="js/Detector.js"></script>
 	<script src="js/libs/stats.min.js"></script>
 	<script src="js/libs/DAT.GUI.min.js"></script>
-
+	
+	
 
 	<script>
 		if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
@@ -88,22 +99,20 @@
 
 		var container, stats;
 
-		var camera, scene, renderer;
+		var camera1, scene, renderer;
 
-		var mesh, texture, geometry, materials, material, current_material;
+		var mesh, texture1, geometry, materials, material, current_material;
 
-		var light, pointLight, pointLight2, ambientLight;
+		var light, pointLight1, pointLight2, ambientLight1;
 
 		var effect, effect2, resolution, numBlobs;
 
-		var composer, effectFXAA, effect2FXAA, hblur, vblur;
+		var composer, effectFXAA, hblur, vblur;
 
 		var effectController;
 
 		var time = 0;
 		var clock = new THREE.Clock();
-
-		let blob;
 
 		init();
 		animate();
@@ -114,12 +123,12 @@
 
 			// CAMERA
 
-			camera = new THREE.PerspectiveCamera( 50, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000 );
-			camera.position.set( 10, 10, 1300 );
+			camera1 = new THREE.PerspectiveCamera( 50, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000 );
+			camera1.position.set( 10, 10, 1300 );
 
 			// CONTROLS
 
-			controls = new THREE.TrackballControls( camera );
+			controls = new THREE.TrackballControls( camera1 );
 
 			// SCENE
 
@@ -131,46 +140,46 @@
 			light.position.set( 150, 50, 100 );
 			scene.add( light );
 
-			pointLight = new THREE.PointLight( {h: 0.5, s: 0.55, v: 0.8} );
-			pointLight.position.set( 100, 100, 150 );
-			scene.add( pointLight );
+			pointLight1 = new THREE.PointLight({h: 0.5, s: 0.55, v: 0.8});
+			pointLight1.position.set( 100, 100, 150 );
+			scene.add( pointLight1 );
 
 			pointLight2 = new THREE.PointLight( 0xD5D887 );
 			pointLight2.position.set( 50, 50, 50 );
 			pointLight2.intensity = 1;
 			scene.add( pointLight2 );
 
-			ambientLight = new THREE.AmbientLight( 0x000000 );
-			ambientLight.intensity = 1;
-			scene.add( ambientLight );
+			ambientLight1 = new THREE.AmbientLight( 0x000000 );
+			ambientLight1.intensity = 1;
+			scene.add( ambientLight1 );
 
 			// MATERIALS
 
 			materials = generateMaterials();
-			current_material = "matte";
+			current_material = "flat";
 
 			// MARCHING CUBES
 
 			resolution = 28;
-			numBlobs = 2;
-			material1 = "matte";
-			material2 = "matte2";
+			numBlobs = 2;	
+			material1 = "matte";	
+			material2 = "matte2";	
 
-			effect = new THREE.MarchingCubes( resolution, materials[ material1 ].m, true, true );
-			effect.position.set( 50, 80, 100 );
+
+			effect = new THREE.MarchingCubes( resolution, materials[material1].m, true, true );
+			effect.position.set( 0, 0, 0 );
 			effect.scale.set( 700, 700, 700 );
 
 			effect.enableUvs = false;
 			effect.enableColors = false;
 
-			effect2 = new THREE.MarchingCubes( resolution, materials[ material2 ].m, true, true );
-			effect2.position.set( 50, 80, 100 );
-			effect2.scale.set( 700, 700, 700 );
+			effect2 = new THREE.MarchingCubes( resolution, materials[ material2 ].m, true, true );	
+			effect2.position.set( 50, 80, 100 );	
+			effect2.scale.set( 700, 700, 700 );	
 
-			effect2.enableUvs = false;
-			effect2.enableColors = false;
-
-			scene.add( effect );
+			effect2.enableUvs = false;	
+			effect2.enableColors = false;	
+			scene.add( effect );	
 			scene.add( effect2 );
 
 			// RENDERER
@@ -223,7 +232,7 @@
 
 			composer = new THREE.EffectComposer( renderer, renderTarget );
 
-			var renderModel = new THREE.RenderPass( scene, camera );
+			var renderModel = new THREE.RenderPass( scene, camera1);
 
 			vblur.renderToScreen = true;
 			//effectFXAA.renderToScreen = true;
@@ -249,16 +258,15 @@
 
 		//
 
-
 		function onWindowResize( event ) {
 
-			SCREEN_WIDTH = window.innerWidth;
+			SCREEN_WIDTH = window.innerWidth/2;
 			SCREEN_HEIGHT = window.innerHeight - 2 * MARGIN;
 
 			renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
 
-			camera.aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
-			camera.updateProjectionMatrix();
+			camera1.aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+			camera1.updateProjectionMatrix();
 
 			renderTarget = new THREE.WebGLRenderTarget( SCREEN_WIDTH, SCREEN_HEIGHT, renderTargetParameters );
 
@@ -291,12 +299,12 @@
 
 			// toons
 
-			var toonMaterial1 = createShaderMaterial( "toon1", light, ambientLight ),
-			toonMaterial2 = createShaderMaterial( "toon2", light, ambientLight ),
-			hatchingMaterial = createShaderMaterial( "hatching", light, ambientLight ),
-			hatchingMaterial2 = createShaderMaterial( "hatching", light, ambientLight ),
-			dottedMaterial = createShaderMaterial( "dotted", light, ambientLight ),
-			dottedMaterial2 = createShaderMaterial( "dotted", light, ambientLight );
+			var toonMaterial1 = createShaderMaterial( "toon1", light, ambientLight1 ),
+			toonMaterial2 = createShaderMaterial( "toon2", light, ambientLight1 ),
+			hatchingMaterial = createShaderMaterial( "hatching", light, ambientLight1 ),
+			hatchingMaterial2 = createShaderMaterial( "hatching", light, ambientLight1 ),
+			dottedMaterial = createShaderMaterial( "dotted", light, ambientLight1 ),
+			dottedMaterial2 = createShaderMaterial( "dotted", light, ambientLight1 );
 
 			hatchingMaterial2.uniforms.uBaseColor.value.setRGB( 0, 0, 0 );
 			hatchingMaterial2.uniforms.uLineColor1.value.setHSV( 0, 0.9, 0.9 );
@@ -307,100 +315,23 @@
 			dottedMaterial2.uniforms.uBaseColor.value.setRGB( 0, 0, 0 );
 			dottedMaterial2.uniforms.uLineColor1.value.setHSV( 0.05, 1.0, 1.0 );
 
-			var texture = THREE.ImageUtils.loadTexture( "textures/ash_uvgrid01.jpg" );
-			texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+			var texture1 = THREE.ImageUtils.loadTexture( "textures/ash_uvgrid01.jpg" );
+			texture1.wrapS = texture1.wrapT = THREE.RepeatWrapping;
 
 			var materials = {
 
-			// "chrome" :
-			// {
-			// 	m: new THREE.MeshLambertMaterial( { color: 0xffffff, envMap: reflectionCube } ),
-			// 	h: 0, s: 1, v: 1
-			// },
-
-			// "liquid" :
-			// {
-			// 	m: new THREE.MeshLambertMaterial( { color: 0xffffff, envMap: refractionCube, refractionRatio: 0.85 } ),
-			// 	h: 0, s: 0, v: 1
-			// },
-
-			// "shiny"  :
-			// {
-			// 	m: new THREE.MeshPhongMaterial( { color: 0x006D77, emissive: 0x006D77, specular: 0x006D77, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.8, perPixel: true, metal: true } ),
-			// 	h: 0, s: 0, v: 1
-			// },
 
 			"matte" :
 			{
 				m: new THREE.MeshPhongMaterial( { color: 0xD90368, emissive: 0x820263, emissiveIntensity: 0.5, specular: 0x006D77, envMap: reflectionCube, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} ),
-				h: 1, s: 0.5, v: 1
+				// h: 1, s: 0.5, v: 1
 			},
 
 			"matte2" :
 			{
 				m: new THREE.MeshPhongMaterial( { color: 0xC5E063, emissive: 0x23967F, emissiveIntensity: 0.5, specular: 0xC5E063, envMap: reflectionCube, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} ),
-				h: 1, s: 0.5, v: 1
-			},
-
-			// "flat" :
-			// {
-			// 	m: new THREE.MeshPhongMaterial( { color: 0x7161ef, specular: 0x7161ef, shininess: 1, shading: THREE.FlatShading, perPixel: true } )
-			// 	//,h: 0, s: 1, v: 0.5
-			// },
-
-			// "textured" :
-			// {
-			// 	m: new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x111111, shininess: 1, map: texture, perPixel: true } ),
-			// 	h: 0, s: 0, v: 1
-			// },
-
-			// "colors" :
-			// {
-			// 	m: new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0xffffff, shininess: 2, vertexColors: THREE.VertexColors, perPixel: true } ),
-			// 	h: 0, s: 0, v: 1
-			// },
-
-			// "plastic" :
-			// {
-			// 	m: new THREE.MeshPhongMaterial( { color: 0x000000, specular: 0x888888, ambient: 0x000000, shininess: 250, perPixel: true } ),
-			// 	h: 0.6, s: 0.9, v: 0.2
-			// },
-
-			// "toon1"  :
-			// {
-			// 	m: toonMaterial1,
-			// 	h: 0.2, s: 0.5, v: 1
-			// },
-
-			// "toon2" :
-			// {
-			// 	m: toonMaterial2,
-			// 	h: 0.4, s: 0.5, v: 1
-			// },
-
-			// "hatching" :
-			// {
-			// 	m: hatchingMaterial,
-			// 	h: 0.2, s: 0.2, v: 1
-			// },
-
-			// "hatching2" :
-			// {
-			// 	m: hatchingMaterial2,
-			// 	h: 0.0, s: 0.9, v: 0.9
-			// },
-
-			// "dotted" :
-			// {
-			// 	m: dottedMaterial,
-			// 	h: 0.2, s: 0.2, v: 1
-			// },
-
-			// "dotted2" :
-			// {
-			// 	m: dottedMaterial2,
-			// 	h: 0.1, s: 1.0, v: 1
-			// }
+				// h: 1, s: 0.5, v: 1
+			}
 
 			};
 
@@ -408,7 +339,7 @@
 
 		}
 
-		function createShaderMaterial( id, light, ambientLight ) {
+		function createShaderMaterial( id, light, ambientLight1 ) {
 
 			var shader = THREE.ShaderToon[ id ];
 
@@ -422,7 +353,7 @@
 			material.uniforms.uDirLightPos.value = light.position;
 			material.uniforms.uDirLightColor.value = light.color;
 
-			material.uniforms.uAmbientLightColor.value = ambientLight.color;
+			material.uniforms.uAmbientLightColor.value = ambientLight1.color;
 
 			return material;
 
@@ -494,17 +425,18 @@
 
 			material:   "matte",
 
-			speed :   3.5,
-			numBlobs:   5,
-			resolution: 50,
+				
+			speed :   3.5,	
+			numBlobs:   5,	
+			resolution: 50,	
 			isolation:  50,
 
-			floor: true,
+			floor: false,
 			wallx: false,
 			wallz: false,
 
-			hue:    1,
-			saturation: 1,
+			hue1:    1,
+			saturatio: 1,
 			value:    1,
 
 			lhue:     0.04,
@@ -512,7 +444,7 @@
 			lvalue:     1.0,
 
 			lx: 0.5,
-			ly: 0.1,
+			ly: 0.1,	
 			lz: 0.3,
 
 			postprocessing: false,
@@ -567,8 +499,8 @@
 
 			h = gui.add( effectController, "h_c" ).name( "Material color" );
 
-			m_h = gui.add( effectController, "hue", 0.0, 1.0, 0.025 );
-			m_s = gui.add( effectController, "saturation", 0.0, 1.0, 0.025 );
+			m_h = gui.add( effectController, "hue1", 0.0, 1.0, 0.025 );
+			m_s = gui.add( effectController, "saturatio", 0.0, 1.0, 0.025 );
 			m_v = gui.add( effectController, "value", 0.0, 1.0, 0.025 );
 
 			g_c = [ m_h, m_s, m_v ];
@@ -581,7 +513,7 @@
 			h = gui.add(effectController, "h_pc").name("Point light color");
 
 			e1 = gui.add(effectController, "lhue", 0.0, 1.0, 0.025).name("hue");
-			e2 = gui.add(effectController, "lsaturation", 0.0, 1.0, 0.025).name("saturation");
+			e2 = gui.add(effectController, "lsaturation", 0.0, 1.0, 0.025).name("saturatio");
 			e3 = gui.add(effectController, "lvalue", 0.0, 1.0, 0.025).name("value");
 
 			g_pc = [ e1, e2, e3 ];
@@ -676,102 +608,120 @@
 
 		}
 
+		
 		// this controls content of marching cubes voxel field
 
 		function updateCubes( object, time, numblobs, floor, wallx, wallz ) {
 
-			object.reset();
+object.reset();
 
-			// fill the field with some metaballs
+// fill the field with some metaballs
 
-			var i, ballx, bally, ballz, subtract, strength;
-			var i, ballBx, ballBy, ballBz;
-			var i, ballCx, ballCy, ballCz;
-
-
-
-			subtract = 80;
-			strength = 1.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
-
-				
-				//ballx = Math.sin( i + 1.26 * time * ( 1.03 + 0.5 * Math.cos( 0.21 * i ) ) ) * 0.27 + 0.5;
-				 //BALL A
-				 bally = 0.4 + Math.cos(time)/10;
-			     ballx = 0.65 + Math.cos(time)/20;
-				 ballz = 0.5 ;
-
-				 ballBy = bally - 0.1  - Math.cos(time + 0.2)/20;
-			     ballBx = ballx - 0.1 - Math.cos(time + 0.15)/50;
-				 ballBz = 0.5 ;
-
-				 ballCy = bally - 0.1 - Math.cos(time - 0.1)/20;
-			     ballCx = ballx + 0.1 - Math.cos(time - 0.1)/40;
-				 ballCz = 0.5 ;
-				 //END OF BALL A
-				//bally = Math.abs( Math.cos( i + 1.12 * time * Math.cos( 1.22 + 0.1424 * i ) ) ) * 0.77; // dip into the floor
-				//ballz = Math.cos( i + 1.32 * time * 0.1 * Math.sin( ( 0.92 + 0.53 * i ) ) ) * 0.27 + 0.5;
-
-				
-
-				object.addBall(ballx, bally, ballz, strength, subtract);
-				object.addBall(ballBx, ballBy, ballBz, strength, subtract);
-				object.addBall(ballCx, ballCy, ballCz, strength, subtract);
-
-
-			
-
-			// if ( floor ) object.addPlaneZ( 2, 12 );
-			// if ( wallz ) object.addPlaneZ( 2, 12 );
-			// if ( wallx ) object.addPlaneX( 2, 12 );
-
-		}
-
-		function updateCubes2( object, time, numblobs, floor, wallx, wallz ) {
-
-		object.reset();
-
-		// fill the field with some metaballs
-
-		var i, ball2x, ball2y, ball2z;
-		var i, ballDx, ballDy, ballDz;
-		var i, ballEx, ballEy, ballEz;
-
-		subtract = 80;
-		strength = 2.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
-
-			
-			//BALL B
-			ball2y = 0.5 + Math.sin(time)/20;
-			ball2x = 0.1 + Math.sin(time)/20;
-			ball2z = 0.45 ;
-
-			ballDy = ball2y + 0.1 - Math.sin(time + 0.3)/20;
-			ballDx = ball2x + 0.15 ;
-			ballDz = 0.5 ;
-
-			ballEy = ball2y - 0.1 - Math.sin(time - 0.1)/10;
-			ballEx = ball2x + 0.15 - Math.sin(time - 0.1)/10;
-			ballEz = 0.45 ;
-			//END OF BALL B
-
-
-			
-
-			object.addBall(ball2x, ball2y, ball2z, strength, subtract);
-			object.addBall(ballDx, ballDy, ballDz, strength, subtract);
-			object.addBall(ballEx, ballEy, ballEz, strength, subtract);
+var i, ballx, bally, ballz, subtract, strength;
+var i, ballBx, ballBy, ballBz;
+var i, ballCx, ballCy, ballCz;
+var i, ballDx, ballDy, ballDz;
 
 
 
-		// if ( floor ) object.addPlaneZ( 2, 12 );
-		// if ( wallz ) object.addPlaneZ( 2, 12 );
-		// if ( wallx ) object.addPlaneX( 2, 12 );
+let x1 = map(gyroYa, -5, 5, 0, 1400);
+
+
+subtract = 40;
+strength1 = 2.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
+strength2 = 1.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
+
+	ballx = gyroXa
+	bally = gyroYa
+	ballz = gyroZa
+
+
+	 //BLOB A
+	 bally = 0.5 + Math.cos(time)/10;
+	 ballx = 0.75 + gyroXa/10 + Math.cos(time)/20;
+	 ballz = 0.5 + gyroZa/10 ;
+
+	 ballBy = bally - 0.1  - Math.cos(time + 0.2)/20;
+	 ballBx = ballx - 0.1 - Math.cos(time + 0.15)/50;
+	 ballBz = 0.5 ;
+
+	 ballCy = bally - 0.1 - Math.cos(time - 0.1)/20;
+	 ballCx = ballx + 0.1 - Math.cos(time - 0.1)/40;
+	 ballCz = 0.5 ;
+
+	 ballDy = bally + 0.05 ;
+	 ballDx = ballx + 0.15 ;
+	 ballDz = 0.5 ;
+	 //END OF BLOB A
+	
+	 effect.scale.set( x1, x1, x1 );
+	
+
+	object.addBall(ballx, bally, ballz, strength1, subtract);
+	object.addBall(ballBx, ballBy, ballBz, strength2, subtract);
+	object.addBall(ballCx, ballCy, ballCz, strength1, subtract);
+	object.addBall(ballDx, ballDy, ballDz, strength2, subtract);
+
+
+
+
+// if ( floor ) object.addPlaneZ( 2, 12 );
+// if ( wallz ) object.addPlaneZ( 2, 12 );
+// if ( wallx ) object.addPlaneX( 2, 12 );
 
 }
 
-		
+function updateCubes2( object, time, numblobs, floor, wallx, wallz ) {
 
-		//
+object.reset();
+
+// fill the field with some metaballs
+
+var i, ball2x, ball2y, ball2z;
+var i, ballEx, ballEy, ballEz;
+var i, ballFx, ballFy, ballFz;
+var i, ballGx, ballGy, ballGz;
+
+let x2 = map(gyroYb, -5, 5, 0, 1400);
+
+subtract = 25;
+strength3 = 2.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
+strength4 = 1.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
+
+
+//BLOB B
+ball2y = 0.5 + gyroYb/10 + Math.sin(time)/20;
+ball2x = 0.1 + gyroXb/10 + Math.sin(time)/20;
+ball2z = 0.5 + gyroZb/10 ;
+
+ballEy = ball2y + 0.1 - Math.sin(time + 0.3)/20;
+ballEx = ball2x + 0.15 ;
+ballEz = 0.5 ;
+
+ballFy = ball2y - 0.1 - Math.sin(time - 0.1)/10;
+ballFx = ball2x + 0.15 - Math.sin(time - 0.1)/10;
+ballFz = 0.5 ;
+
+ballGy = ball2y - 0.15 - Math.sin(time - 0.1)/10;
+ballGx = ball2x + 0.05 - Math.sin(time - 0.1)/10;
+ballGz = 0.5 ;
+//END OF BLOB B
+
+effect.scale.set( x2, x2, x2 );
+
+
+object.addBall(ball2x, ball2y, ball2z, strength3, subtract);
+object.addBall(ballEx, ballEy, ballEz, strength4, subtract);
+object.addBall(ballFx, ballFy, ballFz, strength3, subtract);
+object.addBall(ballGx, ballGy, ballGz, strength4, subtract);
+
+
+
+// if ( floor ) object.addPlaneZ( 2, 12 );
+// if ( wallz ) object.addPlaneZ( 2, 12 );
+// if ( wallx ) object.addPlaneX( 2, 12 );
+
+}
 
 
 		function animate() {
@@ -786,6 +736,8 @@
 		function render() {
 
 			var delta = clock.getDelta();
+
+
 
 			time += delta * effectController.speed * 0.5;
 
@@ -815,26 +767,26 @@
 
 				if ( current_material === "dotted2" ) {
 
-					effect.material.uniforms.uLineColor1.value.setHSV( effectController.hue, effectController.saturation, effectController.value );
+					effect.material.uniforms.uLineColor1.value.setHSV( effectController.hue1, effectController.saturatio, effectController.value );
 
 				} else if ( current_material === "hatching2" ) {
 
 					u = effect.material.uniforms;
 
-					u.uLineColor1.value.setHSV( effectController.hue, effectController.saturation, effectController.value );
-					u.uLineColor2.value.setHSV( effectController.hue, effectController.saturation, effectController.value );
-					u.uLineColor3.value.setHSV( effectController.hue, effectController.saturation, effectController.value );
-					u.uLineColor4.value.setHSV( ( effectController.hue + 0.2 % 1.0 ), effectController.saturation, effectController.value );
+					u.uLineColor1.value.setHSV( effectController.hue1, effectController.saturatio, effectController.value );
+					u.uLineColor2.value.setHSV( effectController.hue1, effectController.saturatio, effectController.value );
+					u.uLineColor3.value.setHSV( effectController.hue1, effectController.saturatio, effectController.value );
+					u.uLineColor4.value.setHSV( ( effectController.hue1 + 0.2 % 1.0 ), effectController.saturatio, effectController.value );
 
 				} else {
 
-					effect.material.uniforms.uBaseColor.value.setHSV( effectController.hue, effectController.saturation, effectController.value );
+					effect.material.uniforms.uBaseColor.value.setHSV( effectController.hue1, effectController.saturatio, effectController.value );
 
 				}
 
 			} else {
 
-				effect.material.color.setHSV( effectController.hue, effectController.saturation, effectController.value );
+				effect.material.color.setHSV( effectController.hue1, effectController.saturatio, effectController.value );
 
 			}
 
@@ -843,7 +795,7 @@
 			light.position.set( effectController.lx, effectController.ly, effectController.lz );
 			light.position.normalize();
 
-			pointLight.color.setHSV( effectController.lhue, effectController.lsaturation, effectController.lvalue );
+			pointLight1.color.setHSV( effectController.lhue, effectController.lsaturation, effectController.lvalue );
 
 			// render
 
@@ -854,13 +806,14 @@
 			} else {
 
 				renderer.clear();
-				renderer.render( scene, camera );
+				renderer.render( scene, camera1 );
 
 			}
 
 		}
 
 </script>
+
 
 </body>
 </html>
