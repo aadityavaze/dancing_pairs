@@ -24,7 +24,7 @@ THREE.MarchingCubes = function ( resolution, material, enableUvs, enableColors )
 
 		// parameters
 
-		this.isolation = 80.0;
+		this.isolation =80.0;
 
 		// size of field, 32 is pushing it in Javascript :)
 
@@ -468,17 +468,20 @@ THREE.MarchingCubes = function ( resolution, material, enableUvs, enableColors )
 		// radius = sqrt(strength / subtract)
 
 		var radius = this.size * Math.sqrt( strength / subtract ),
+		//radius =30
 			zs = ballz * this.size,
 			ys = bally * this.size,
 			xs = ballx * this.size;
 
 		var min_z = Math.floor( zs - radius ); if ( min_z < 1 ) min_z = 1;
 		var max_z = Math.floor( zs + radius ); if ( max_z > this.size - 1 ) max_z = this.size - 1;
+	
 		var min_y = Math.floor( ys - radius ); if ( min_y < 1 ) min_y = 1;
 		var max_y = Math.floor( ys + radius ); if ( max_y > this.size - 1 ) max_y = this.size - 1;
 		var min_x = Math.floor( xs - radius ); if ( min_x < 1  ) min_x = 1;
 		var max_x = Math.floor( xs + radius ); if ( max_x > this.size - 1 ) max_x = this.size - 1;
-
+		//var min_x = 0;
+		//var max_x = 200;
 
 		// Don't polygonize in the outer layer because normals aren't
 		// well-defined there.
@@ -497,11 +500,11 @@ THREE.MarchingCubes = function ( resolution, material, enableUvs, enableColors )
 				fy = y / this.size - bally;
 				fy2 = fy * fy;
 
-				for ( x = min_x; x < max_x; x++ ) {
+				for ( x = -min_x; x < max_x; x++ ) {
 
 					fx = x / this.size - ballx;
 					val = strength / ( 0.000001 + fx*fx + fy2 + fz2 ) - subtract;
-					if ( val > 0.0 ) this.field[ y_offset + x ] += val;
+					if ( val > 1.0 ) this.field[ y_offset + x ] += val;
 
 				}
 

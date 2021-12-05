@@ -7,7 +7,7 @@
 	  src="https://unpkg.com/p5ble@0.0.7/dist/p5.ble.js"
 	  type="text/javascript"
 	></script>
-	<title>three.js webgl - marching cubes</title>
+	<title>Dancing Pairs</title>
 	<meta charset="utf-8">
 	<style>
 		body {
@@ -110,10 +110,29 @@
 		var composer, effectFXAA, hblur, vblur;
 
 		var effectController;
+		
+
+		var color1 = new THREE.Color(), color2 = new THREE.Color(), color3 = new THREE.Color();
+		var emmisive1 = new THREE.Color(), emmisive2 = new THREE.Color(), emmisive3 = new THREE.Color();
+		var specular1 = new THREE.Color(), specular2 = new THREE.Color(), specular3 = new THREE.Color();
+
+		var startHue1, startHue2, endHue;
 
 		var time = 0;
 		var clock = new THREE.Clock();
 
+		var i, ballx, bally, ballz, subtract, strength1, strength2;
+		var i, ballBx, ballBy, ballBz;
+		var i, ballCx, ballCy, ballCz;
+		var i, ballDx, ballDy, ballDz;
+
+
+		var i, ball2x, ball2y, ball2z;
+		var i, ballEx, ballEy, ballEz;
+		var i, ballFx, ballFy, ballFz;
+		var i, ballGx, ballGy, ballGz;
+
+		var distBetweenBlobs;
 		init();
 		animate();
 
@@ -124,7 +143,7 @@
 			// CAMERA
 
 			camera1 = new THREE.PerspectiveCamera( 50, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000 );
-			camera1.position.set( 10, 10, 1300 );
+			camera1.position.set( 10, 10, 2000 );
 
 			// CONTROLS
 
@@ -160,7 +179,7 @@
 
 			// MARCHING CUBES
 
-			resolution = 28;
+			resolution = 30;
 			numBlobs = 2;	
 			material1 = "matte";	
 			material2 = "matte2";	
@@ -174,8 +193,8 @@
 			effect.enableColors = false;
 
 			effect2 = new THREE.MarchingCubes( resolution, materials[ material2 ].m, true, true );	
-			effect2.position.set( 50, 80, 100 );	
-			effect2.scale.set( 700, 700, 700 );	
+			effect2.position.set( 0, 0, 0 );	
+			effect2.scale.set( 700, 700,700 );	
 			effect2.enableUvs = false;	
 			effect2.enableColors = false;	
 			scene.add( effect );	
@@ -187,7 +206,7 @@
 			renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
 
 			renderer.domElement.style.position = "absolute";
-			renderer.domElement.style.top = MARGIN + "px";
+			renderer.domElement.style.top = "0px";
 			renderer.domElement.style.left = "0px";
 
 			container.appendChild( renderer.domElement );
@@ -289,6 +308,22 @@
 				path + 'py' + format, path + 'ny' + format,
 				path + 'pz' + format, path + 'nz' + format
 			];
+			let tempColor;
+			startHue1 = 0.9213;
+			startHue2 = 0.2027;
+			endHue = 0.40;
+			color1.setHSV(0.9213,0.8,0.8510);
+			//color1.getHSL(tempColor)
+			//console.log(tempColor);
+			color2.setHSV(0.2027,0.8,0.8510);
+			color3.setHSV(0.6,1.0,1.0);
+			emmisive1.setHSV(0.8737,0.9846,0.5098);
+			emmisive2.setHSV(0.4667,0.7667,0.5882);
+			emmisive3.setHSV(0.6,1.0,1.0);
+			specular1.setHSV(0.5140,1.0000,1.0000);
+			specular2.setHSV(0.2027,0.5580,0.8784);
+			specular3.setHSV(0.6,1.0,1.0);
+			
 
 			var reflectionCube = THREE.ImageUtils.loadTextureCube( urls );
 			reflectionCube.format = THREE.RGBFormat;
@@ -319,97 +354,17 @@
 
 			var materials = {
 
-			// "chrome" :
-			// {
-			// 	m: new THREE.MeshLambertMaterial( { color: 0xffffff, envMap: reflectionCube } ),
-			// 	h: 0, s: 1, v: 1
-			// },
-
-			// "liquid" :
-			// {
-			// 	m: new THREE.MeshLambertMaterial( { color: 0xffffff, envMap: refractionCube, refractionRatio: 0.85 } ),
-			// 	h: 0, s: 0, v: 1
-			// },
-
-			// "shiny"  :
-			// {
-			// 	m: new THREE.MeshPhongMaterial( { color: 0x006D77, emissive: 0x006D77, specular: 0x006D77, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.8, perPixel: true, metal: true } ),
-			// 	h: 0, s: 0, v: 1
-			// },
-
 			"matte" :
 			{
-				m: new THREE.MeshPhongMaterial( { color: 0xD90368, emissive: 0x820263, emissiveIntensity: 0.5, specular: 0x006D77, envMap: reflectionCube, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} ),
+				m: new THREE.MeshPhongMaterial( { color: color1, emissive: color1, emissiveIntensity: 0.5, specular: 0x006D77, envMap: reflectionCube, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} ),
 				h: 1, s: 0.5, v: 1
 			},
 
 			"matte2" :
 			{
-				m: new THREE.MeshPhongMaterial( { color: 0xC5E063, emissive: 0x23967F, emissiveIntensity: 0.5, specular: 0xC5E063, envMap: reflectionCube, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} ),
+				m: new THREE.MeshPhongMaterial( { color: color2, emissive: color2, emissiveIntensity: 0.5, specular: 0xC5E063, envMap: reflectionCube, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} ),
 				h: 1, s: 0.5, v: 1
 			}
-			// ,
-
-			// "flat" :
-			// {
-			// 	m: new THREE.MeshPhongMaterial( { color: 0x7161ef, specular: 0x7161ef, shininess: 1, shading: THREE.FlatShading, perPixel: true } )
-			// 	//,h: 0, s: 1, v: 0.5
-			// },
-
-			// "textured" :
-			// {
-			// 	m: new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x111111, shininess: 1, map: texture1, perPixel: true } ),
-			// 	h: 0, s: 0, v: 1
-			// },
-
-			// "colors" :
-			// {
-			// 	m: new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0xffffff, shininess: 2, vertexColors: THREE.VertexColors, perPixel: true } ),
-			// 	h: 0, s: 0, v: 1
-			// },
-
-			// "plastic" :
-			// {
-			// 	m: new THREE.MeshPhongMaterial( { color: 0x000000, specular: 0x888888, ambient: 0x000000, shininess: 250, perPixel: true } ),
-			// 	h: 0.6, s: 0.9, v: 0.2
-			// },
-
-			// "toon1"  :
-			// {
-			// 	m: toonMaterial1,
-			// 	h: 0.2, s: 0.5, v: 1
-			// },
-
-			// "toon2" :
-			// {
-			// 	m: toonMaterial2,
-			// 	h: 0.4, s: 0.5, v: 1
-			// },
-
-			// "hatching" :
-			// {
-			// 	m: hatchingMaterial,
-			// 	h: 0.2, s: 0.2, v: 1
-			// },
-
-			// "hatching2" :
-			// {
-			// 	m: hatchingMaterial2,
-			// 	h: 0.0, s: 0.9, v: 0.9
-			// },
-
-			// "dotted" :
-			// {
-			// 	m: dottedMaterial,
-			// 	h: 0.2, s: 0.2, v: 1
-			// },
-
-			// "dotted2" :
-			// {
-			// 	m: dottedMaterial2,
-			// 	h: 0.1, s: 1.0, v: 1
-			// }
-
 			};
 
 			return materials;
@@ -694,14 +649,11 @@ object.reset();
 
 // fill the field with some metaballs
 
-var i, ballx, bally, ballz, subtract, strength;
-var i, ballBx, ballBy, ballBz;
-var i, ballCx, ballCy, ballCz;
+let x1 = mapScale(gyroYa, -5, 5, 400, 1000);
 
-
-
-subtract = 80;
-strength = 1.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
+subtract = 40;
+strength1 = 2.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
+strength2 = 1.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
 
 	ballx = gyroXa
 	bally = gyroYa
@@ -711,78 +663,104 @@ strength = 1.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
 	
 	//ballx = Math.sin( i + 1.26 * time * ( 1.03 + 0.5 * Math.cos( 0.21 * i ) ) ) * 0.27 + 0.5;
 	 //BALL A
-	 bally = 0.4 + gyroYa/10 + Math.cos(time)/10;
-	 ballx = 0.65 + gyroXa/10 + Math.cos(time)/20;
+	 bally = 0.5 + Math.cos(time)/10;
+	 ballx = 0.7 + gyroXa/10 + Math.cos(time)/20;
 	 ballz = 0.5 + gyroZa/10 ;
 
 	 ballBy = bally - 0.1  - Math.cos(time + 0.2)/20;
 	 ballBx = ballx - 0.1 - Math.cos(time + 0.15)/50;
-	 ballBz = 0.5 ;
+	 ballBz = ballz/20 + 0.4
 
 	 ballCy = bally - 0.1 - Math.cos(time - 0.1)/20;
 	 ballCx = ballx + 0.1 - Math.cos(time - 0.1)/40;
-	 ballCz = 0.5 ;
-	 //END OF BALL A
-	//bally = Math.abs( Math.cos( i + 1.12 * time * Math.cos( 1.22 + 0.1424 * i ) ) ) * 0.77; // dip into the floor
-	//ballz = Math.cos( i + 1.32 * time * 0.1 * Math.sin( ( 0.92 + 0.53 * i ) ) ) * 0.27 + 0.5;
+	 ballCz = ballz/20 +0.5
+	
+	 ballDy = bally + 0.05 ;
+	 ballDx = ballx + 0.15 ;
+	 ballDz = ballz/20 +0.6 
+	 //END OF BLOB A
+	 distBetweenBlobs = ballx - ball2x;
 
+	color1.setHSV(getInterpolatedHue(startHue1, endHue, distBetweenBlobs),0.7,0.9);
+	color2.setHSV(getInterpolatedHue(startHue2, endHue, distBetweenBlobs),0.7,0.9);
+
+
+	console.log(color1);
+
+	effect.material = new THREE.MeshPhongMaterial( { color: color1, emissive: color1, emissiveIntensity: 0.5, specular: 0x006D77, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} ),
+		
+	effect2.material = new THREE.MeshPhongMaterial( { color: color2, emissive: color2, emissiveIntensity: 0.5, specular: 0x006D77, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} ),
+	
+	effect.scale.set(x1, x1,  x1 );
+
+	object.addBall(ballx, bally, ballz, strength1, subtract);
+	object.addBall(ballBx, ballBy, ballBz, strength2, subtract);
+	object.addBall(ballCx, ballCy, ballCz, strength1, subtract);
+	object.addBall(ballDx, ballDy, ballDz, strength2, subtract);
 	
 
-	object.addBall(ballx, bally, ballz, strength, subtract);
-	object.addBall(ballBx, ballBy, ballBz, strength, subtract);
-	object.addBall(ballCx, ballCy, ballCz, strength, subtract);
+}
 
 
-
-
-// if ( floor ) object.addPlaneZ( 2, 12 );
-// if ( wallz ) object.addPlaneZ( 2, 12 );
-// if ( wallx ) object.addPlaneX( 2, 12 );
-
+function getInterpolatedHue(startHue, endHue, distance){
+	if(distance<0.2){
+		return endHue;
+	}
+	else if(distance>0.5){
+		return startHue;
+	}
+	else{
+		
+		return endHue + (endHue-startHue)*(distance-0.2);
+	}
 }
 
 function updateCubes2( object, time, numblobs, floor, wallx, wallz ) {
 
-object.reset();
-
-// fill the field with some metaballs
-
-var i, ball2x, ball2y, ball2z;
-var i, ballDx, ballDy, ballDz;
-var i, ballEx, ballEy, ballEz;
-
+	if(distBetweenBlobs<0.5){
+		
+	}
+	else{
+		object.reset();
+	}
 
 
-subtract = 80;
-strength = 2.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
+let x2 = mapScale(gyroYb, -5, 5, 400, 1000);
 
+subtract = 25;
+strength3 = 2.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
+strength4 = 1.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
 
 //BALL B
-ball2y = 0.5 + gyroYb/10 + Math.sin(time)/20;
-ball2x = 0.4 + gyroXb/10 + Math.sin(time)/20;
+ball2y =0.5 + Math.sin(time)/20;
+ball2x = 0.1 + gyroXb/10 + Math.sin(time)/20;
 ball2z = 0.45 + gyroZb/10 ;
 
-ballDy = ball2y + 0.1 - Math.sin(time + 0.3)/20;
-ballDx = ball2x + 0.15 ;
-ballDz = 0.5 ;
+ballEy = ball2y + 0.1 - Math.sin(time + 0.3)/20;
+ballEx = ball2x + 0.15 ;
+ballEz = 0.5 + ball2z/20 ;
 
-ballEy = ball2y - 0.1 - Math.sin(time - 0.1)/10;
-ballEx = ball2x + 0.15 - Math.sin(time - 0.1)/10;
-ballEz = 0.45 ;
-//END OF BALL B
+ballFy = ball2y - 0.1 - Math.sin(time - 0.1)/10;
+ballFx = ball2x + 0.15 - Math.sin(time - 0.1)/10;
+ballFz = 0.5 + ball2z/20;
 
-
-
-
-object.addBall(ball2x, ball2y, ball2z, strength, subtract);
-object.addBall(ballDx, ballDy, ballDz, strength, subtract);
-object.addBall(ballEx, ballEy, ballEz, strength, subtract);
+ballGy = ball2y - 0.15 - Math.sin(time - 0.1)/10;
+ballGx = ball2x + 0.05 - Math.sin(time - 0.1)/10;
+ballGz = 0.5 + ball2z/20;
+//END OF BLOB B
 
 
 
-// if ( floor ) object.addPlaneZ( 2, 12 );
-// if ( wallz ) object.addPlaneZ( 2, 12 );
-// if ( wallx ) object.addPlaneX( 2, 12 );
+
+effect2.scale.set( x2, x2, x2 );
+
+
+object.addBall(ball2x, ball2y, ball2z, strength3, subtract);
+object.addBall(ballEx, ballEy, ballEz, strength4, subtract);
+object.addBall(ballFx, ballFy, ballFz, strength3, subtract);
+object.addBall(ballGx, ballGy, ballGz, strength4, subtract);
+
+
 
 }
 
@@ -790,6 +768,8 @@ object.addBall(ballEx, ballEy, ballEz, strength, subtract);
 		function animate() {
 
 			requestAnimationFrame( animate );
+			
+
 
 			render();
 			stats.update();
@@ -821,38 +801,22 @@ object.addBall(ballEx, ballEy, ballEz, strength, subtract);
 
 			}
 
-			updateCubes( effect, time, effectController.numBlobs, effectController.floor, effectController.wallx, effectController.wallz );
-			updateCubes2( effect2, time, effectController.numBlobs, effectController.floor, effectController.wallx, effectController.wallz );
+			
+			 
+	//new THREE.MeshPhongMaterial( { color: 0x000000, emissive: 0xffffff, emissiveIntensity: 0.5, specular: 0x006D77, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} );
+	updateCubes( effect, time, effectController.numBlobs, effectController.floor, effectController.wallx, effectController.wallz );
 
-			// materials
+	
+	if(distBetweenBlobs<0.5){
+		updateCubes2( effect, time, effectController.numBlobs, effectController.floor, effectController.wallx, effectController.wallz );
 
-			if ( effect.material instanceof THREE.ShaderMaterial ) {
+	}
+	else{
+		updateCubes2( effect2, time, effectController.numBlobs, effectController.floor, effectController.wallx, effectController.wallz );
 
-				if ( current_material === "dotted2" ) {
-
-					effect.material.uniforms.uLineColor1.value.setHSV( effectController.hue1, effectController.saturatio, effectController.value );
-
-				} else if ( current_material === "hatching2" ) {
-
-					u = effect.material.uniforms;
-
-					u.uLineColor1.value.setHSV( effectController.hue1, effectController.saturatio, effectController.value );
-					u.uLineColor2.value.setHSV( effectController.hue1, effectController.saturatio, effectController.value );
-					u.uLineColor3.value.setHSV( effectController.hue1, effectController.saturatio, effectController.value );
-					u.uLineColor4.value.setHSV( ( effectController.hue1 + 0.2 % 1.0 ), effectController.saturatio, effectController.value );
-
-				} else {
-
-					effect.material.uniforms.uBaseColor.value.setHSV( effectController.hue1, effectController.saturatio, effectController.value );
-
-				}
-
-			} else {
-
-				effect.material.color.setHSV( effectController.hue1, effectController.saturatio, effectController.value );
-
-			}
-
+	}
+			
+			
 			// lights
 
 			light.position.set( effectController.lx, effectController.ly, effectController.lz );
@@ -873,8 +837,13 @@ object.addBall(ballEx, ballEy, ballEz, strength, subtract);
 
 			}
 
+			
+
 		}
 
+		function mapScale (number, inMin, inMax, outMin, outMax) {
+    return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+}
 </script>
 
 
