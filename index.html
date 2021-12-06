@@ -22,6 +22,7 @@
 		}
 
 		#info {
+			opacity: 0;
 		  color: #ffffff;
 		  position: absolute;
 		  top: 0px;
@@ -33,7 +34,19 @@
 		  color: gold;
 		}
 
+		button {
+			background: #ffffff20;
+			opacity: 0.8;
+			color: #fff;
+			border: none;
+			border-radius: 2px;
+			padding: 8px;
+
+		}
+		
+
 		#oldie {
+			opacity: 0;
 		  font-family: monospace;
 		  font-size: 13px;
 
@@ -187,14 +200,14 @@
 
 			effect = new THREE.MarchingCubes( resolution, materials[material1].m, true, true );
 			effect.position.set( 0, 0, 0 );
-			effect.scale.set( 700, 700, 700 );
+			effect.scale.set( 700, 700,700 );
 
 			effect.enableUvs = false;
 			effect.enableColors = false;
 
 			effect2 = new THREE.MarchingCubes( resolution, materials[ material2 ].m, true, true );	
 			effect2.position.set( 0, 0, 0 );	
-			effect2.scale.set( 700, 700,700 );	
+			effect2.scale.set( 700, 700, 700 );	
 			effect2.enableUvs = false;	
 			effect2.enableColors = false;	
 			scene.add( effect );	
@@ -223,7 +236,7 @@
 			stats.domElement.style.top = '0px';
 			container.appendChild( stats.domElement );
 
-			stats.domElement.children[ 0 ].children[ 0 ].style.color = "#888";
+			stats.domElement.children[ 0 ].children[ 0 ].style.opacity = 0;
 			stats.domElement.children[ 0 ].style.background = "transparent";
 			stats.domElement.children[ 0 ].children[ 1 ].style.display = "none";
 
@@ -310,11 +323,12 @@
 			];
 			let tempColor;
 			startHue1 = 0.9213;
-			startHue2 = 0.2027;
-			endHue = 0.40;
+			startHue2 = 0.1;
+			endHue = 0.80;
 			color1.setHSV(0.9213,0.8,0.8510);
 			//color1.getHSL(tempColor)
 			//console.log(tempColor);
+
 			color2.setHSV(0.2027,0.8,0.8510);
 			color3.setHSV(0.6,1.0,1.0);
 			emmisive1.setHSV(0.8737,0.9846,0.5098);
@@ -333,21 +347,7 @@
 
 			// toons
 
-			var toonMaterial1 = createShaderMaterial( "toon1", light, ambientLight1 ),
-			toonMaterial2 = createShaderMaterial( "toon2", light, ambientLight1 ),
-			hatchingMaterial = createShaderMaterial( "hatching", light, ambientLight1 ),
-			hatchingMaterial2 = createShaderMaterial( "hatching", light, ambientLight1 ),
-			dottedMaterial = createShaderMaterial( "dotted", light, ambientLight1 ),
-			dottedMaterial2 = createShaderMaterial( "dotted", light, ambientLight1 );
-
-			hatchingMaterial2.uniforms.uBaseColor.value.setRGB( 0, 0, 0 );
-			hatchingMaterial2.uniforms.uLineColor1.value.setHSV( 0, 0.9, 0.9 );
-			hatchingMaterial2.uniforms.uLineColor2.value.setHSV( 0, 0.9, 0.9 );
-			hatchingMaterial2.uniforms.uLineColor3.value.setHSV( 0, 0.9, 0.9 );
-			hatchingMaterial2.uniforms.uLineColor4.value.setHSV( 0.1, 0.9, 0.9 );
-
-			dottedMaterial2.uniforms.uBaseColor.value.setRGB( 0, 0, 0 );
-			dottedMaterial2.uniforms.uLineColor1.value.setHSV( 0.05, 1.0, 1.0 );
+		
 
 			var texture1 = THREE.ImageUtils.loadTexture( "textures/ash_uvgrid01.jpg" );
 			texture1.wrapS = texture1.wrapT = THREE.RepeatWrapping;
@@ -391,259 +391,9 @@
 
 		}
 
-		//
-
-		function setupGui() {
-
-			var createHandler = function( id ) {
-
-				return function() {
-
-					var mat_old = materials[ current_material ];
-					mat_old.h = m_h.getValue();
-					mat_old.s = m_s.getValue();
-					mat_old.v = m_v.getValue();
-
-					current_material = id;
-
-					var mat = materials[ id ];
-					effect.material = mat.m;
-
-					m_h.setValue( mat.h );
-					m_s.setValue( mat.s );
-					m_v.setValue( mat.v );
-
-					mm.setValue( current_material );
-
-					if ( current_material === "textured" ) {
-
-						effect.enableUvs = true;
-
-					} else {
-
-						effect.enableUvs = false;
-
-					}
-
-					if ( current_material === "colors" ) {
-
-						effect.enableColors = true;
-
-					} else {
-
-						effect.enableColors = false;
-
-					}
-
-				};
-
-			};
-
-			function toggle( e ) {
-
-				if ( e.style.display === "block" ) {
-
-					e.style.display = "none";
-
-				} else {
-
-					e.style.display = "block";
-
-				}
-
-			}
-
-			effectController = {
-
-			material:   "matte",
-
-				
-			speed :   3.5,	
-			numBlobs:   5,	
-			resolution: 50,	
-			isolation:  50,
-
-			floor: false,
-			wallx: false,
-			wallz: false,
-
-			hue1:    1,
-			saturatio: 1,
-			value:    1,
-
-			lhue:     0.04,
-			lsaturation: 1.0,
-			lvalue:     1.0,
-
-			lx: 0.5,
-			ly: 0.1,	
-			lz: 0.3,
-
-			postprocessing: false,
-
-			h_m:  function() {
-			  for (var i = 0; i < g_m.length; i++)  toggle(g_m[ i ].domElement);
-			},
-			h_c:  function() {
-			  for (var i = 0; i < g_c.length; i++)  toggle(g_c[ i ].domElement);
-			},
-			h_pc: function() {
-			  for (var i = 0; i < g_pc.length; i++) toggle(g_pc[ i ].domElement);
-			},
-			h_do: function() {
-			  for (var i = 0; i < g_do.length; i++) toggle(g_do[ i ].domElement);
-			},
-			h_s:  function() {
-			  for (var i = 0; i < g_s.length; i++)  toggle(g_s[ i ].domElement);
-			},
-			h_r:  function() {
-			  for (var i = 0; i < g_r.length; i++)  toggle(g_r[ i ].domElement);
-			},
-
-			dummy: function() {
-			}
-
-			};
-
-			var e1, e2, e3, e4, e5, e6, h, m_h, m_s, m_v,
-			g_m = [], g_c, g_pc, g_do, g_s, g_r, mm,
-			gui = new DAT.GUI();
-
-			// material (type)
-
-			mm = gui.add( effectController, "material" );
-			mm.domElement.style.display = "none";
-
-			h = gui.add( effectController, "h_m" ).name( "Materials" );
-			setGuiHeaderStyle(h, 0, 65, 50);
-
-			for ( var m in materials ) {
-
-				effectController[ m ] = createHandler( m );
-
-				e1 = gui.add( effectController, m ).name( m );
-				setGuiElementStyle( [ e1 ], 0, 65, 50, "block" );
-				g_m.push( e1 );
-
-			}
-
-			// material (color)
-
-			h = gui.add( effectController, "h_c" ).name( "Material color" );
-
-			m_h = gui.add( effectController, "hue1", 0.0, 1.0, 0.025 );
-			m_s = gui.add( effectController, "saturatio", 0.0, 1.0, 0.025 );
-			m_v = gui.add( effectController, "value", 0.0, 1.0, 0.025 );
-
-			g_c = [ m_h, m_s, m_v ];
-
-			setGuiHeaderStyle( h, 20, 65, 50 );
-			setGuiElementStyle( g_c, 20, 65, 50, "block" );
-
-			// light (point)
-
-			h = gui.add(effectController, "h_pc").name("Point light color");
-
-			e1 = gui.add(effectController, "lhue", 0.0, 1.0, 0.025).name("hue");
-			e2 = gui.add(effectController, "lsaturation", 0.0, 1.0, 0.025).name("saturatio");
-			e3 = gui.add(effectController, "lvalue", 0.0, 1.0, 0.025).name("value");
-
-			g_pc = [ e1, e2, e3 ];
-
-			setGuiHeaderStyle(h, 50, 65, 50);
-			setGuiElementStyle(g_pc, 50, 65, 50);
-
-			// light (directional)
-
-			h = gui.add(effectController, "h_do").name("Directional light orientation");
-
-			e1 = gui.add(effectController, "lx", -1.0, 1.0, 0.025).name("x");
-			e2 = gui.add(effectController, "ly", -1.0, 1.0, 0.025).name("y");
-			e3 = gui.add(effectController, "lz", -1.0, 1.0, 0.025).name("z");
-
-			g_do = [ e1, e2, e3 ];
-
-			setGuiHeaderStyle(h, 80, 65, 50);
-			setGuiElementStyle(g_do, 80, 65, 50);
-
-			// simulation
-
-			h = gui.add(effectController, "h_s").name("Simulation");
-
-			e1 = gui.add(effectController, "speed", 0.1, 8.0, 0.05);
-			e2 = gui.add(effectController, "numBlobs", 1, 50, 1);
-			e3 = gui.add(effectController, "resolution", 14, 40, 1);
-			e4 = gui.add(effectController, "isolation", 10, 300, 1);
-
-			e5 = gui.add(effectController, "floor");
-			e6 = gui.add(effectController, "wallx");
-			e7 = gui.add(effectController, "wallz");
-
-			e5.updateDisplay();
-			e6.updateDisplay();
-			e7.updateDisplay();
-
-			g_s = [ e1, e2, e3, e4, e5, e6, e7 ];
-
-			setGuiHeaderStyle(h, 200, 65, 50);
-			setGuiElementStyle(g_s, 200, 65, 50, "block");
-
-			// rendering
-
-			h = gui.add(effectController, "h_r").name("Rendering");
-			e1 = gui.add(effectController, "postprocessing");
-
-			g_r = [ e1 ];
-
-			setGuiHeaderStyle(h, 225, 65, 50);
-			setGuiElementStyle(g_r, 225, 65, 50, "block");
-
-			// save
-
-			//e1 = gui.add(GUI, "saveURL").name("Save to URL");
-			//setGuiHeaderStyle(e1, 250, 65, 50, "block");
-
-			gui.domElement.style.backgroundColor = "#222";
-			gui.domElement.style.visibility = "hidden";
-
-			// restore material from URL
-
-			id = mm.getValue()
-			current_material = id;
-			var mat = materials[ id ];
-			effect.material = mat.m;
-
-		}
-
-
-		function setGuiHeaderStyle( g, h, s, v ) {
-
-			var color = "hsl(" + h + "," + s + "%, " + v + "%)";
-
-			g.domElement.style.borderLeft = "solid 5px " + color;
-			g.domElement.style.background = color;
-			g.domElement.style.fontWeight = "bold";
-
-		}
-
-		function setGuiElementStyle( a, h, s, v, display ) {
-
-			var s, color = "hsl(" + h + "," + s + "%, " + v + "%)";
-
-			for ( i = 0; i < a.length; i ++ ) {
-
-				s = a[ i ].domElement.style;
-				s.borderLeft = "solid 5px " + color;
-				s.display = display ? display : "none";
-
-			}
-
-		}
-
-		
 		// this controls content of marching cubes voxel field
 
-		function updateCubes( object, time, numblobs, floor, wallx, wallz ) {
+		function updateCubes( object, time, numblobs) {
 
 object.reset();
 
@@ -655,7 +405,7 @@ subtract = 40;
 strength1 = 2.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
 strength2 = 1.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
 
-	ballx = gyroXa
+	ballx = gyroXa 
 	bally = gyroYa
 	ballz = gyroZa
 
@@ -693,7 +443,7 @@ strength2 = 1.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
 	
 	effect.scale.set(x1, x1,  x1 );
 
-	object.addBall(ballx, bally, ballz, strength1, subtract);
+	object.addBall(ballx , bally, ballz, strength1, subtract);
 	object.addBall(ballBx, ballBy, ballBz, strength2, subtract);
 	object.addBall(ballCx, ballCy, ballCz, strength1, subtract);
 	object.addBall(ballDx, ballDy, ballDz, strength2, subtract);
@@ -715,10 +465,10 @@ function getInterpolatedHue(startHue, endHue, distance){
 	}
 }
 
-function updateCubes2( object, time, numblobs, floor, wallx, wallz ) {
+function updateCubes2( object, time, numblobs ) {
 
 	if(distBetweenBlobs<0.5){
-		
+		//object.reset();
 	}
 	else{
 		object.reset();
@@ -804,15 +554,15 @@ object.addBall(ballGx, ballGy, ballGz, strength4, subtract);
 			
 			 
 	//new THREE.MeshPhongMaterial( { color: 0x000000, emissive: 0xffffff, emissiveIntensity: 0.5, specular: 0x006D77, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} );
-	updateCubes( effect, time, effectController.numBlobs, effectController.floor, effectController.wallx, effectController.wallz );
+	updateCubes( effect, time, effectController.numBlobs);
 
 	
 	if(distBetweenBlobs<0.5){
-		updateCubes2( effect, time, effectController.numBlobs, effectController.floor, effectController.wallx, effectController.wallz );
+		updateCubes2( effect, time, effectController.numBlobs );
 
 	}
 	else{
-		updateCubes2( effect2, time, effectController.numBlobs, effectController.floor, effectController.wallx, effectController.wallz );
+		updateCubes2( effect2, time, effectController.numBlobs);
 
 	}
 			
@@ -844,6 +594,258 @@ object.addBall(ballGx, ballGy, ballGz, strength4, subtract);
 		function mapScale (number, inMin, inMax, outMin, outMax) {
     return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }
+
+
+		//
+
+		function setupGui() {
+
+var createHandler = function( id ) {
+
+	return function() {
+
+		var mat_old = materials[ current_material ];
+		mat_old.h = m_h.getValue();
+		mat_old.s = m_s.getValue();
+		mat_old.v = m_v.getValue();
+
+		current_material = id;
+
+		var mat = materials[ id ];
+		effect.material = mat.m;
+
+		m_h.setValue( mat.h );
+		m_s.setValue( mat.s );
+		m_v.setValue( mat.v );
+
+		mm.setValue( current_material );
+
+		if ( current_material === "textured" ) {
+
+			effect.enableUvs = true;
+
+		} else {
+
+			effect.enableUvs = false;
+
+		}
+
+		if ( current_material === "colors" ) {
+
+			effect.enableColors = true;
+
+		} else {
+
+			effect.enableColors = false;
+
+		}
+
+	};
+
+};
+
+function toggle( e ) {
+
+	if ( e.style.display === "block" ) {
+
+		e.style.display = "none";
+
+	} else {
+
+		e.style.display = "block";
+
+	}
+
+}
+
+effectController = {
+
+material:   "matte",
+
+	
+speed :   3.5,	
+numBlobs:   5,	
+resolution: 50,	
+isolation:  50,
+
+floor: false,
+wallx: false,
+wallz: false,
+
+hue1:    1,
+saturatio: 1,
+value:    1,
+
+lhue:     0.04,
+lsaturation: 1.0,
+lvalue:     1.0,
+
+lx: 0.5,
+ly: 0.1,	
+lz: 0.3,
+
+postprocessing: false,
+
+h_m:  function() {
+  for (var i = 0; i < g_m.length; i++)  toggle(g_m[ i ].domElement);
+},
+h_c:  function() {
+  for (var i = 0; i < g_c.length; i++)  toggle(g_c[ i ].domElement);
+},
+h_pc: function() {
+  for (var i = 0; i < g_pc.length; i++) toggle(g_pc[ i ].domElement);
+},
+h_do: function() {
+  for (var i = 0; i < g_do.length; i++) toggle(g_do[ i ].domElement);
+},
+h_s:  function() {
+  for (var i = 0; i < g_s.length; i++)  toggle(g_s[ i ].domElement);
+},
+h_r:  function() {
+  for (var i = 0; i < g_r.length; i++)  toggle(g_r[ i ].domElement);
+},
+
+dummy: function() {
+}
+
+};
+
+var e1, e2, e3, e4, e5, e6, h, m_h, m_s, m_v,
+g_m = [], g_c, g_pc, g_do, g_s, g_r, mm,
+gui = new DAT.GUI();
+
+// material (type)
+
+mm = gui.add( effectController, "material" );
+mm.domElement.style.display = "none";
+
+h = gui.add( effectController, "h_m" ).name( "Materials" );
+setGuiHeaderStyle(h, 0, 65, 50);
+
+for ( var m in materials ) {
+
+	effectController[ m ] = createHandler( m );
+
+	e1 = gui.add( effectController, m ).name( m );
+	setGuiElementStyle( [ e1 ], 0, 65, 50, "block" );
+	g_m.push( e1 );
+
+}
+
+// material (color)
+
+h = gui.add( effectController, "h_c" ).name( "Material color" );
+
+m_h = gui.add( effectController, "hue1", 0.0, 1.0, 0.025 );
+m_s = gui.add( effectController, "saturatio", 0.0, 1.0, 0.025 );
+m_v = gui.add( effectController, "value", 0.0, 1.0, 0.025 );
+
+g_c = [ m_h, m_s, m_v ];
+
+setGuiHeaderStyle( h, 20, 65, 50 );
+setGuiElementStyle( g_c, 20, 65, 50, "block" );
+
+// light (point)
+
+h = gui.add(effectController, "h_pc").name("Point light color");
+
+e1 = gui.add(effectController, "lhue", 0.0, 1.0, 0.025).name("hue");
+e2 = gui.add(effectController, "lsaturation", 0.0, 1.0, 0.025).name("saturatio");
+e3 = gui.add(effectController, "lvalue", 0.0, 1.0, 0.025).name("value");
+
+g_pc = [ e1, e2, e3 ];
+
+setGuiHeaderStyle(h, 50, 65, 50);
+setGuiElementStyle(g_pc, 50, 65, 50);
+
+// light (directional)
+
+h = gui.add(effectController, "h_do").name("Directional light orientation");
+
+e1 = gui.add(effectController, "lx", -1.0, 1.0, 0.025).name("x");
+e2 = gui.add(effectController, "ly", -1.0, 1.0, 0.025).name("y");
+e3 = gui.add(effectController, "lz", -1.0, 1.0, 0.025).name("z");
+
+g_do = [ e1, e2, e3 ];
+
+setGuiHeaderStyle(h, 80, 65, 50);
+setGuiElementStyle(g_do, 80, 65, 50);
+
+// simulation
+
+h = gui.add(effectController, "h_s").name("Simulation");
+
+e1 = gui.add(effectController, "speed", 0.1, 8.0, 0.05);
+e2 = gui.add(effectController, "numBlobs", 1, 50, 1);
+e3 = gui.add(effectController, "resolution", 14, 40, 1);
+e4 = gui.add(effectController, "isolation", 10, 300, 1);
+
+e5 = gui.add(effectController, "floor");
+e6 = gui.add(effectController, "wallx");
+e7 = gui.add(effectController, "wallz");
+
+e5.updateDisplay();
+e6.updateDisplay();
+e7.updateDisplay();
+
+g_s = [ e1, e2, e3, e4, e5, e6, e7 ];
+
+setGuiHeaderStyle(h, 200, 65, 50);
+setGuiElementStyle(g_s, 200, 65, 50, "block");
+
+// rendering
+
+h = gui.add(effectController, "h_r").name("Rendering");
+e1 = gui.add(effectController, "postprocessing");
+
+g_r = [ e1 ];
+
+setGuiHeaderStyle(h, 225, 65, 50);
+setGuiElementStyle(g_r, 225, 65, 50, "block");
+
+// save
+
+//e1 = gui.add(GUI, "saveURL").name("Save to URL");
+//setGuiHeaderStyle(e1, 250, 65, 50, "block");
+
+gui.domElement.style.backgroundColor = "#222";
+gui.domElement.style.visibility = "hidden";
+
+// restore material from URL
+
+id = mm.getValue()
+current_material = id;
+var mat = materials[ id ];
+effect.material = mat.m;
+
+}
+
+
+function setGuiHeaderStyle( g, h, s, v ) {
+
+var color = "hsl(" + h + "," + s + "%, " + v + "%)";
+
+g.domElement.style.borderLeft = "solid 5px " + color;
+g.domElement.style.background = color;
+g.domElement.style.fontWeight = "bold";
+
+}
+
+function setGuiElementStyle( a, h, s, v, display ) {
+
+var s, color = "hsl(" + h + "," + s + "%, " + v + "%)";
+
+for ( i = 0; i < a.length; i ++ ) {
+
+	s = a[ i ].domElement.style;
+	s.borderLeft = "solid 5px " + color;
+	s.display = display ? display : "none";
+
+}
+
+}
+
+
 </script>
 
 
