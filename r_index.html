@@ -119,8 +119,6 @@
 
 			var effectController;
 
-			var reflectionCube
-
 			var color1 = new THREE.Color(), color2 = new THREE.Color(), color3 = new THREE.Color();
 			var emmisive1 = new THREE.Color(), emmisive2 = new THREE.Color(), emmisive3 = new THREE.Color();
 			var specular1 = new THREE.Color(), specular2 = new THREE.Color(), specular3 = new THREE.Color();
@@ -152,7 +150,7 @@
 				// CAMERA
 
 				camera1 = new THREE.PerspectiveCamera( 50, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000 );
-				camera1.position.set( 10, 10, 1400 );
+				camera1.position.set( 10, 10, 1200 );
 
 				// CONTROLS
 
@@ -318,18 +316,24 @@
 					path + 'pz' + format, path + 'nz' + format
 				];
 				let tempColor;
-				startHue1 = 0.8889;
-				startHue2 = 0.4529;
-				endHue = 0.7163;
-				color1.setHSV(0.8889,1.0,1.0);
-			
+				startHue1 = 0.9;
+				startHue2 = 0.1;
+				endHue = 0.80;
+				color1.setHSV(1,0.8,0.8510);
+				//color1.getHSL(tempColor)
+				//console.log(tempColor);
 
-				color2.setHSV(0.4529,1.0,1.0);
-				color3.setHSV(0.7163,1.0,1.0);
-		
+				color2.setHSV(0.2027,0.8,0.8510);
+				color3.setHSV(0.6,1.0,1.0);
+				emmisive1.setHSV(0.8737,0.9846,0.5098);
+				emmisive2.setHSV(0.4667,0.7667,0.5882);
+				emmisive3.setHSV(0.6,1.0,1.0);
+				specular1.setHSV(0.5140,1.0000,1.0000);
+				specular2.setHSV(0.2027,0.5580,0.8784);
+				specular3.setHSV(0.6,1.0,1.0);
 				
 
-				reflectionCube = THREE.ImageUtils.loadTextureCube( urls );
+				var reflectionCube = THREE.ImageUtils.loadTextureCube( urls );
 				reflectionCube.format = THREE.RGBFormat;
 
 				var refractionCube = new THREE.Texture( reflectionCube.image, new THREE.CubeRefractionMapping() );
@@ -346,14 +350,14 @@
 
 				"matte" :
 				{
-					m: new THREE.MeshPhongMaterial( { color: color1, emissive: color1, emissiveIntensity: 0.5, specular: color1, envMap: reflectionCube, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} ),
-					// h: 1, s: 0.5, v: 1
+					m: new THREE.MeshPhongMaterial( { color: color1, emissive: color1, emissiveIntensity: 0.5, specular: 0x006D77, envMap: reflectionCube, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} ),
+					h: 1, s: 0.5, v: 1
 				},
 
 				"matte2" :
 				{
-					m: new THREE.MeshPhongMaterial( { color: color2, emissive: color2, emissiveIntensity: 0.5, specular: color2, envMap: reflectionCube, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} ),
-					// h: 1, s: 0.5, v: 1
+					m: new THREE.MeshPhongMaterial( { color: color2, emissive: color2, emissiveIntensity: 0.5, specular: 0xC5E063, envMap: reflectionCube, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} ),
+					h: 1, s: 0.5, v: 1
 				}
 				};
 
@@ -389,11 +393,11 @@
 
 	// fill the field with some metaballs
 
-	//let x1 = mapScale(gyroZa, -5, 5, 50, 1500);
+	let x1 = mapScale(gyroZa, -5, 5, 200, 1000);
 
-	subtract = 15;
-	strength1 = 2 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
-	strength2 = 1 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
+	subtract = 40;
+	strength1 = 2.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
+	strength2 = 1.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
 
 	
 
@@ -403,38 +407,38 @@
 
 		//gyroXa = 0;
 		
-		bally = 0.7 + gyroYa/4 + Math.cos(time)/10;
-		ballx = 0.7 + gyroXa/4 + Math.cos(time)/20;
+		bally = 0.5 + gyroYa/8 + Math.cos(time)/10;
+		ballx = 0.7 + gyroXa/8 + Math.cos(time)/20;
 		ballz = 0.5 ;
 
-		ballBy = bally + 0.18  - Math.cos(time + 0.2)/20;
-		ballBx = ballx - 0.20 - Math.cos(time + 0.15)/50;
+		ballBy = bally - 0.1  - Math.cos(time + 0.2)/20;
+		ballBx = ballx - 0.1 - Math.cos(time + 0.15)/50;
 		ballBz = ballz/20 + 0.4
 
-		ballCy = bally + 0.15 - Math.cos(time - 0.1)/20;
-		ballCx = ballx + 0.18 - Math.cos(time - 0.1)/40;
+		ballCy = bally - 0.1 - Math.cos(time - 0.1)/20;
+		ballCx = ballx + 0.1 - Math.cos(time - 0.1)/40;
 		ballCz = ballz/20 +0.5
 		
-		ballDy = bally - 0.15 ;
-		ballDx = ballx + 0.2 ;
+		ballDy = bally + 0.05 ;
+		ballDx = ballx + 0.15 ;
 		ballDz = ballz/20 +0.6 
 		//END OF BLOB A
 		distBetweenBlobs = ballx - ball2x;
 
+		color1.setHSV(getInterpolatedHue(startHue1, endHue, distBetweenBlobs),0.7,0.9);
 		
-		//console.log(color1);
 
 
-		
-		color1.setHSV(getInterpolatedHue(startHue1, endHue, distBetweenBlobs),1.0,1.0);
-		effect.material = new THREE.MeshPhongMaterial( { color: color1, emissive: color1, emissiveIntensity: 0.5, specular: color1, envMap: reflectionCube, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} )
+		console.log(color1);
+
+		effect.material = new THREE.MeshPhongMaterial( { color: color1, emissive: color1, emissiveIntensity: 0.5, specular: 0x006D77, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} )
 			
 		
-		//effect.scale.set(x1, x1,  x1 );
+		effect.scale.set(x1, x1,  x1 );
 
 
-		 if(gyroXa!= 10){
-		//	if(true){
+		//if(gyroXa!= 10){
+			if(true){
 			object.addBall(0.5 + scalingBalls*(ballx-0.5), 0.5 + scalingBalls*(bally-0.5), 0.5 + scalingBalls*(ballz-0.5), scalingBalls*strength1, subtract);
 			object.addBall(0.5 + scalingBalls*(ballBx-0.5), 0.5 + scalingBalls*(ballBy-0.5), 0.5 + scalingBalls*(ballBz-0.5), scalingBalls*strength2, subtract);
 			object.addBall(0.5 + scalingBalls*(ballCx-0.5), 0.5 + scalingBalls*(ballCy-0.5), 0.5 + scalingBalls*(ballCz-0.5), scalingBalls*strength1, subtract);
@@ -451,57 +455,63 @@
 		if(distance<0.2){
 			return endHue;
 		}
-		else if(distance>0.6){
+		else if(distance>0.5){
 			return startHue;
 		}
 		else{
 			
-			return startHue + (endHue-startHue)*5*(0.6-distance);
+			return endHue + (endHue-startHue)*(distance-0.5);
 		}
 	}
 
 	function updateCubesforBallB( object, time, numblobs ) {
-	
 
-	//let x2 = mapScale(gyroZb, -5, 5, 50, 1500);
+		if(distBetweenBlobs<0.5){
+			//object.reset();
+		}
+		else{
+			object.reset();
+		}
 
-	subtract = 15;
-	strength3 = 2 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
-	strength4 = 1 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
+
+	let x2 = mapScale(gyroZb, -5, 5, 200, 1000);
+
+	subtract = 25;
+	strength3 = 2.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
+	strength4 = 1.5 / ( ( Math.sqrt( numblobs ) - 1 ) / 5 + 1 );
 
 	//BALL B
 	let scalingBalls = 0.6;
 
-	//gyroXb = 0;
+	gyroXb = 0;
 
-	ball2y = 0.2 +  gyroYb/4 + Math.sin(time)/20;
-	ball2x = 0.1 + gyroXb/4 + Math.sin(time)/20;
-	ball2z = 0.5;
 
-	ballEy = ball2y + 0.15 - Math.sin(time + 0.3)/20;
-	ballEx = ball2x + 0.18 ;
-	ballEz = 0.5
+	ball2y =0.5 +  gyroYb/8 + Math.sin(time)/20;
+	ball2x = 0.1 + gyroXb/8 + Math.sin(time)/20;
+	ball2z = 0.45  ;
+
+	ballEy = ball2y + 0.1 - Math.sin(time + 0.3)/20;
+	ballEx = ball2x + 0.15 ;
+	ballEz = 0.5 + ball2z/20 ;
 
 	ballFy = ball2y - 0.1 - Math.sin(time - 0.1)/10;
-	ballFx = ball2x + 0.3 - Math.sin(time - 0.1)/10;
-	ballFz = 0.5
+	ballFx = ball2x + 0.15 - Math.sin(time - 0.1)/10;
+	ballFz = 0.5 + ball2z/20;
 
 	ballGy = ball2y - 0.15 - Math.sin(time - 0.1)/10;
 	ballGx = ball2x + 0.05 - Math.sin(time - 0.1)/10;
-	ballGz = 0.5 
+	ballGz = 0.5 + ball2z/20;
 
 	//END OF BLOB B
 
 
 
-	color2.setHSV(getInterpolatedHue(startHue2, endHue, distBetweenBlobs),1.0,1.0);
-	effect2.material = new THREE.MeshPhongMaterial( { color: color2, emissive: color2, emissiveIntensity: 0.5, specular: color2, envMap: reflectionCube, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} )
+	color2.setHSV(getInterpolatedHue(startHue2, endHue, distBetweenBlobs),0.7,0.9);
+	effect2.material = new THREE.MeshPhongMaterial( { color: color2, emissive: color2, emissiveIntensity: 0.5, specular: 0x006D77, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} ),
 		
-
-	//effect2.scale.set( x2, x2, x2 );
-
-	 if(gyroXb!= 10){
-	//if(true){
+	effect2.scale.set( x2, x2, x2 );
+			if(true){
+	//if(gyroXb!= 10){
 	object.addBall(0.5 + scalingBalls*(ball2x-0.5), 0.5 + scalingBalls*(ball2y-0.5), 0.5 + scalingBalls*(ball2z-0.5), scalingBalls*strength3, subtract);
 	object.addBall(0.5 + scalingBalls*(ballEx-0.5), 0.5 + scalingBalls*(ballEy-0.5), 0.5 + scalingBalls*(ballEz-0.5), scalingBalls*strength4, subtract);
 	object.addBall(0.5 + scalingBalls*(ballFx-0.5), 0.5 + scalingBalls*(ballFy-0.5), 0.5 + scalingBalls*(ballFz-0.5), scalingBalls*strength3, subtract);
@@ -551,17 +561,12 @@
 				
 		updateCubesforBallA( effect, time, effectController.numBlobs);
 
-		//if(true){
+		
 		if(distBetweenBlobs<0.5){
-		 	color1.setHSV(getInterpolatedHue(startHue1, endHue, distBetweenBlobs),1.0,1.0);
-	 effect.material = new THREE.MeshPhongMaterial( { color: color1, emissive: color2, emissiveIntensity: 0.5, specular: color2, envMap: reflectionCube, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} )
-	 effect2.reset();
 			updateCubesforBallB( effect, time, effectController.numBlobs );
 
 		}
 		else{
-
-			effect2.reset();
 			updateCubesforBallB( effect2, time, effectController.numBlobs);
 
 		}
@@ -816,7 +821,7 @@
 	id = mm.getValue()
 	current_material = id;
 	var mat = materials[ id ];
-	//effect.material = mat.m;
+	effect.material = mat.m;
 
 	}
 
