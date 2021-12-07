@@ -109,6 +109,7 @@
 
 			var camera1, scene, renderer;
 
+			var proximityFactor = 0;
 			var mesh, texture1, geometry, materials, material, current_material;
 
 			var light, pointLight1, pointLight2, ambientLight1;
@@ -403,8 +404,8 @@
 
 		//gyroXa = 0;
 		
-		bally = 0.7 + gyroYa/4 + Math.cos(time)/10;
-		ballx = 0.7 + gyroXa/4 + Math.cos(time)/20;
+		bally = 0.7 - proximityFactor + gyroYa/4 + Math.cos(time)/10;
+		ballx = 0.8 - proximityFactor + gyroXa/4 + Math.cos(time)/20;
 		ballz = 0.5 ;
 
 		ballBy = bally + 0.18  - Math.cos(time + 0.2)/20;
@@ -473,9 +474,9 @@
 	let scalingBalls = 0.6;
 
 	//gyroXb = 0;
-
-	ball2y = 0.2 +  gyroYb/4 + Math.sin(time)/20;
-	ball2x = 0.1 + gyroXb/4 + Math.sin(time)/20;
+console.log("Proximity factor:" + proximityFactor);
+	ball2y = 0.2 + proximityFactor + gyroYb/4 + Math.sin(time)/20;
+	ball2x = 0.1 + proximityFactor +  gyroXb/4 + Math.sin(time)/20;
 	ball2z = 0.5;
 
 	ballEy = ball2y + 0.15 - Math.sin(time + 0.3)/20;
@@ -548,23 +549,40 @@
 
 				}
 
+	
+		let accA = Math.sqrt(Math.pow(gyroXa,2)+Math.pow(gyroYa,2)+Math.pow(gyroZa,2))
+		let accB = Math.sqrt(Math.pow(gyroXb,2)+Math.pow(gyroYb,2)+Math.pow(gyroZb,2))
+		let proximityThreshold = 1.1;
+		console.log("Acc A" + accA);
+		console.log("Acc B" + accB);
+		if(accA > proximityThreshold &&  accB > proximityThreshold)
+		{
+			proximityFactor = 0.2;
+		}
+		else{
+			if(proximityFactor > 0)
+			{
+				proximityFactor -=0.001;
+			}
+			
+		}
 				
 		updateCubesforBallA( effect, time, effectController.numBlobs);
 
 		//if(true){
-		if(distBetweenBlobs<0.5){
+		//if(distBetweenBlobs<0.5){
 		 	color1.setHSV(getInterpolatedHue(startHue1, endHue, distBetweenBlobs),1.0,1.0);
 	 effect.material = new THREE.MeshPhongMaterial( { color: color1, emissive: color2, emissiveIntensity: 0.5, specular: color2, envMap: reflectionCube, reflectivity: 0.4, opacity:1, shininess: 150, perPixel: true} )
 	 effect2.reset();
 			updateCubesforBallB( effect, time, effectController.numBlobs );
 
-		}
-		else{
+		//}
+		//else{
 
 			effect2.reset();
 			updateCubesforBallB( effect2, time, effectController.numBlobs);
 
-		}
+		//}
 				
 				
 				// lights

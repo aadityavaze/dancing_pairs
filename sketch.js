@@ -86,11 +86,11 @@
     gyroYa = accValues[1]
     gyroZa = accValues[2]
   
-
-
    
-    // console.log('value ya: ', gyroYa);
-    // console.log('value za: ', gyroZa);
+
+   console.log('value xa: ', gyroXa);
+    console.log('value ya: ', gyroYa);
+    console.log('value za: ', gyroZa);
 
     myBLEa.read(xCharactersticA,'string',gotXValueA);
 
@@ -108,9 +108,9 @@
     gyroZb = accValues[2]
   
 
-    // console.log('value xb: ', gyroXb);
-    // console.log('value yb: ', gyroYb);
-    // console.log('value zb: ', gyroZb);
+    console.log('value xb: ', gyroXb);
+    console.log('value yb: ', gyroYb);
+    console.log('value zb: ', gyroZb);
 
     myBLEb.read(xCharactersticB,'string',gotXValueB);
   }
