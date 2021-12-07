@@ -32,7 +32,7 @@ class BLEPeripheralViewController: UIViewController {
 //    let uuidCharForIndicateZ = CBUUID(string: "a9edf39c-296c-4bd7-9289-eb70656c4fe2")
 //    let uuidCharForWrite = CBUUID(string: "a9edf38f-296c-4bd7-9289-eb70656c4fe2")
 //    let uuidCharForRead = CBUUID(string: "a9edf38e-296c-4bd7-9289-eb70656c4fe2")
-
+//
 
 
 

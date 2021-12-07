@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AB5A77CB26081AE700C3ED0A"
-               BuildableName = "Dancing metaballs.app"
+               BuildableName = "Dancing pairs.app"
                BlueprintName = "Dancing pairs"
                ReferencedContainer = "container:Dancing pairs.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AB5A77CB26081AE700C3ED0A"
-            BuildableName = "Dancing metaballs.app"
+            BuildableName = "Dancing pairs.app"
             BlueprintName = "Dancing pairs"
             ReferencedContainer = "container:Dancing pairs.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AB5A77CB26081AE700C3ED0A"
-            BuildableName = "Dancing metaballs.app"
+            BuildableName = "Dancing pairs.app"
             BlueprintName = "Dancing pairs"
             ReferencedContainer = "container:Dancing pairs.xcodeproj">
          </BuildableReference>
